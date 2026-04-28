@@ -15,8 +15,10 @@ const { chromium } = require('playwright');
 
   await page.goto('https://vsembed.ru/embed/movie/687163');
 
-  await page.waitForTimeout(9392000);
+  // await page.waitForTimeout(9392000);
 
+  await page.waitForTimeout(20000);
+  
   await browser.close();
 
   console.log("Recording complete");
