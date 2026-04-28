@@ -1,0 +1,44 @@
+name: Record Page
+
+on:
+  workflow_dispatch:
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run recorder
+        run: node record.js
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Convert to mp4 and delete webm
+        run: |
+          mkdir -p output
+          for f in videos/*.webm; do
+            ffmpeg -i "$f" "output/output.mp4"
+            rm "$f"
+          done
+
+      - name: Upload mp4
+        uses: actions/upload-artifact@v4
+        with:
+          name: recording
+          path: output/output.mp4
